@@ -138,7 +138,7 @@ final case class AwsBatchJob(jobDescriptor: BackendJobDescriptor, // WDL/CWL
 
 
       case input: AwsBatchFileInput if input.s3key.startsWith("s3://") =>
-        s"$s3Cmd cp --no-progress ${input.s3key} ${input.mount.mountPoint.pathAsString}/${input.local}"
+        s"for i in `seq 5`; do $s3Cmd cp --no-progress ${input.s3key} ${input.mount.mountPoint.pathAsString}/${input.local} && break || sleep 30; done"
           .replaceAllLiterally(AwsBatchWorkingDisk.MountPoint.pathAsString, workDir)
 
       case input: AwsBatchFileInput =>
